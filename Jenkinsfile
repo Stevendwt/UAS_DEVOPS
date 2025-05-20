@@ -4,17 +4,23 @@ pipeline {
     stages {
         stage('Clone') {
             steps {
-                git 'https://github.com/Stevendwt/UAS_DEVOPS.git'
+                git branch: 'development', url: 'https://github.com/Stevendwt/UAS_DEVOPS.git'
             }
         }
         stage('Install Dependencies') {
-            steps {
-                sh 'npm install'
-            }
-        }
+    steps {
+        sh '''
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install --upgrade pip
+            pip install -r requirements.txt
+        '''
+    }
+}
+
         stage('Run Tests') {
             steps {
-                sh 'npm test'
+                sh 'pytest'
             }
         }
     }
