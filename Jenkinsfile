@@ -1,6 +1,10 @@
 pipeline {
-    agent any
-
+    agent {
+        docker {
+            image 'node:16'
+            args '-u root:root'
+        }
+    }
     stages {
         stage('Clone') {
             steps {
