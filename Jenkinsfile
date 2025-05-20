@@ -3,9 +3,11 @@ pipeline {
 
     stages {
         stage('Clone') {
-            steps {
-                git 'https://github.com/Stevendwt/UAS_DEVOPS.git'
-            }
+    steps {
+        git branch: 'development', url: 'https://github.com/Stevendwt/UAS_DEVOPS.git'
+    }
+}
+
         }
         stage('Install Dependencies') {
             steps {
