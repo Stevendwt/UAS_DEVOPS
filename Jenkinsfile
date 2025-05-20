@@ -20,12 +20,13 @@ pipeline {
         }
 
         stage('Run Tests') {
-            steps {
-                sh '''
-                    . venv/bin/activate
-                    pytest
-                '''
-            }
-        }
+    steps {
+        sh '''
+            . venv/bin/activate
+            PYTHONPATH=. pytest
+        '''
+    }
+}
+
     }
 }
