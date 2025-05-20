@@ -1,10 +1,6 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:16'
-            args '-u root:root'
-        }
-    }
+    agent any
+
     stages {
         stage('Clone') {
             steps {
@@ -13,12 +9,12 @@ pipeline {
         }
         stage('Install Dependencies') {
             steps {
-                sh 'npm install'
+                sh 'pip install -r requirements.txt'
             }
         }
         stage('Run Tests') {
             steps {
-                sh 'npm test'
+                sh 'pytest'
             }
         }
     }
