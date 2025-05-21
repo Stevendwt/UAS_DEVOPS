@@ -1,4 +1,3 @@
-import argparse
 from flask import Flask, render_template_string, request
 
 app = Flask(__name__)
@@ -24,7 +23,4 @@ def login():
     return render_template_string(login_template)
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--port', type=int, default=5001, help='Port to run the Flask app')
-    args = parser.parse_args()
-    app.run(host='0.0.0.0', port=args.port)
+    app.run(host='0.0.0.0', port=5001)
