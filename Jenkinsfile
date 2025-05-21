@@ -20,13 +20,24 @@ pipeline {
         }
 
         stage('Run Tests') {
-    steps {
-        sh '''
-            . venv/bin/activate
-            PYTHONPATH=. pytest
-        '''
-    }
-}
+            steps {
+                sh '''
+                    . venv/bin/activate
+                    PYTHONPATH=. pytest
+                '''
+            }
+        }
 
+        stage('Deploy to Local') {
+            steps {
+                sh '''
+                    # Hentikan aplikasi jika sedang berjalan
+                    pkill -f "venv/bin/python app.py" || true
+
+                    # Aktifkan environment dan jalankan ulang
+                    nohup venv/bin/python app.py > app.log 2>&1 &
+                '''
+            }
+        }
     }
 }
