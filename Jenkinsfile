@@ -1,45 +1,42 @@
 pipeline {
     agent any
 
+    environment {
+        IMAGE_NAME = "my-flask-app"
+        CONTAINER_NAME = "flask-login"
+        PORT = "5001"
+    }
+
     stages {
-        stage('Clone') {
+        stage('Clone Repo') {
             steps {
                 git branch: 'development', url: 'https://github.com/Stevendwt/UAS_DEVOPS.git'
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Build Docker Image') {
             steps {
                 sh '''
-                    python3 -m venv venv
-                    . venv/bin/activate
-                    pip install --upgrade pip
-                    pip install -r requirements.txt
+                    docker build -t $IMAGE_NAME .
                 '''
             }
         }
 
-        stage('Run Tests') {
+        stage('Stop Previous Container') {
             steps {
                 sh '''
-                    . venv/bin/activate
-                    PYTHONPATH=. pytest
+                    docker stop $CONTAINER_NAME || true
+                    docker rm $CONTAINER_NAME || true
                 '''
             }
         }
 
-        stage('Deploy to Local') {
-    steps {
-        sh '''
-            pkill -f "venv/bin/python app.py" || true
-            nohup venv/bin/python app.py --port=5001 > app.log 2>&1 &
-        '''
-        sh '''
-    cat app.py | grep "app.run"
-'''
-
-    }
-}
-
+        stage('Run New Container') {
+            steps {
+                sh '''
+                    docker run -d --name $CONTAINER_NAME -p $PORT:5001 $IMAGE_NAME
+                '''
+            }
+        }
     }
 }
