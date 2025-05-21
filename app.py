@@ -1,27 +1,30 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+import argparse
+from flask import Flask, render_template_string, request
 
 app = Flask(__name__)
-app.secret_key = "secret-key"
 
-# Dummy user data
-users = {"admin": "password123"}
+login_template = '''
+<!doctype html>
+<title>Login</title>
+<h2>Login Page</h2>
+<form method="post">
+  Username: <input type="text" name="username"><br><br>
+  Password: <input type="password" name="password"><br><br>
+  <input type="submit" value="Login">
+</form>
+'''
 
-@app.route('/')
-def home():
-    return redirect(url_for('login'))
-
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-
-        if username in users and users[username] == password:
-            return f"Welcome, {username}!"
+        if request.form['username'] == 'admin' and request.form['password'] == 'admin':
+            return '<h1>Login successful!</h1>'
         else:
-            flash("Invalid username or password")
-            return redirect(url_for('login'))
-    return render_template('login.html')
+            return '<h1>Login failed. Try again.</h1>'
+    return render_template_string(login_template)
 
-if __name__ == "__main__":
-    app.run(debug=True)
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--port', type=int, default=5001, help='Port to run the Flask app')
+    args = parser.parse_args()
+    app.run(host='0.0.0.0', port=args.port)
