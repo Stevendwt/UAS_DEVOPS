@@ -1,9 +1,20 @@
+import pytest
 from app import app
 
-def test_home():
-    # Membuat test client dari aplikasi Flask
-    client = app.test_client()
+@pytest.fixture
+def client():
+    with app.test_client() as client:
+        yield client
+
+def test_login_page(client):
     response = client.get('/')
-    
     assert response.status_code == 200
-    assert response.data == b'Hello from Flask!'
+    assert b'Login Page' in response.data
+
+def test_login_success(client):
+    response = client.post('/', data=dict(username='admin', password='admin'))
+    assert b'Login successful' in response.data
+
+def test_login_fail(client):
+    response = client.post('/', data=dict(username='user', password='wrong'))
+    assert b'Login failed' in response.data
