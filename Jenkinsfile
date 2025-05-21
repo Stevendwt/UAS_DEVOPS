@@ -34,6 +34,10 @@ pipeline {
             pkill -f "venv/bin/python app.py" || true
             nohup venv/bin/python app.py --port=5001 > app.log 2>&1 &
         '''
+        sh '''
+    cat app.py | grep "app.run"
+'''
+
     }
 }
 
