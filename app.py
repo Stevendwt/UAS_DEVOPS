@@ -1,8 +1,8 @@
-from flask import Flask, render_template_string, request, redirect, url_for
+import argparse
+from flask import Flask, render_template_string, request
 
 app = Flask(__name__)
 
-# Template login
 login_template = '''
 <!doctype html>
 <title>Login</title>
@@ -24,5 +24,7 @@ def login():
     return render_template_string(login_template)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5001)
-
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--port', type=int, default=5001, help='Port to run the Flask app')
+    args = parser.parse_args()
+    app.run(host='0.0.0.0', port=args.port)
